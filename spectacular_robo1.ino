@@ -190,20 +190,68 @@ int shape = 3;
 int score = 0;
 
 void printTetris() {
+  
+  // 13
+  Adafruit_NeoPixel stripa0 = Adafruit_NeoPixel(10, A0, NEO_GRB + NEO_KHZ800);
+  // 1
+  Adafruit_NeoPixel stripa1 = Adafruit_NeoPixel(10, A1, NEO_GRB + NEO_KHZ800);
+  // 0
+  Adafruit_NeoPixel stripa2 = Adafruit_NeoPixel(10, A2, NEO_GRB + NEO_KHZ800);
+	for(int i = 0; i < 13; i ++) {
+      Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, i, NEO_GRB + NEO_KHZ800);
+      for(int t = 0; t < 10; t ++) {
+        strip.setPixelColor(t, 0, 0, 0);
+		stripa0.setPixelColor(t, 0, 0, 0);
+        stripa1.setPixelColor(t, 0, 0, 0);
+        stripa2.setPixelColor(t, 0, 0, 0);
+      }
+	  strip.show();
+    }
+  
+  
     for(int _y = 0; _y < HEIGHT; _y ++) {
+      Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, HEIGHT - 1 - _y, NEO_GRB + NEO_KHZ800);
         for(int _x = 0; _x < WIDTH; _x ++) {
             if (_x >= x && _y >= y && _x < x + 4 && _y < y + 4 && blocks[shape][_y - y + rotate * 4][_x - x] != 0) {
               Serial.print("#");
+              
+              if (1 <= _y && _y <= 11) {
+                strip.setPixelColor(_x, 255, 0, 0);
+              } else if (_y == 0) {
+                stripa0.setPixelColor(_x, 255, 0, 0);
+              } else if (_y == 12) {
+                stripa1.setPixelColor(_x, 255, 0, 0);
+              } else if (_y == 13) { 
+                stripa2.setPixelColor(_x, 255, 0, 0);
+              }
+             
+              
             } else if(tetris[_y][_x] != 0) {
               Serial.print("@");
+              
+              if (1 <= _y && _y <= 11) {
+                strip.setPixelColor(_x, 0, 255, 0);
+              } else if (_y == 0) {
+                stripa0.setPixelColor(_x, 0, 255, 0);
+              } else if (_y == 12) {
+                stripa1.setPixelColor(_x, 0, 255, 0);
+              } else if (_y == 13) { 
+                stripa2.setPixelColor(_x, 0, 255, 0);
+              }
+              
             } else if (tetris[_y][_x] == 0) {
               Serial.print("O");
             }
         }
       Serial.println();
+	  strip.show();
     }
   Serial.print("score : ");
   Serial.println(score);
+  stripa0.show();
+  stripa1.show();
+  stripa2.show();
+  delay(1000);
 }
 
 int isOutOfBoard(int x, int y, int shape, int rotate) {
@@ -281,6 +329,8 @@ void removeLineChecker() {
         }
         if (removeAvaliable) {
             addScore(1000);
+		    printTetris();
+          
             removeLine(_y);
             shiftLine(_y);
         }
@@ -321,12 +371,36 @@ void rotateBlock() {
     }
 }
 
+void ledTest() {
+  Adafruit_NeoPixel stripa0 = Adafruit_NeoPixel(10, A0, NEO_GRB + NEO_KHZ800);
+  Adafruit_NeoPixel stripa1 = Adafruit_NeoPixel(10, A1, NEO_GRB + NEO_KHZ800);
+  Adafruit_NeoPixel stripa2 = Adafruit_NeoPixel(10, A2, NEO_GRB + NEO_KHZ800);
+	for(int i = 0; i < 13; i ++) {
+      Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, i, NEO_GRB + NEO_KHZ800);
+      for(int t = 0; t < 10; t ++) {
+        strip.setPixelColor(t, 255, 20 * t, 0);
+		stripa0.setPixelColor(t, 255, 20 * t, 0);
+        stripa1.setPixelColor(t, 255, 20 * t, 0);
+        stripa2.setPixelColor(t, 255, 20 * t, 0);
+      }
+	  strip.show();
+    }
+  stripa0.show();
+  stripa1.show();
+  stripa2.show();
+}
+
 // C++ code
 //
 void setup()
 {
   Serial.begin(9600);
-
+  pinMode(A0, OUTPUT);
+  pinMode(A1, OUTPUT);
+  pinMode(A2, OUTPUT);
+  
+  ledTest();
+  
     printTetris();
   Serial.print("collision check ");
   Serial.println(isOutOfBoard(5, 11, 3, 0));
@@ -346,10 +420,11 @@ void setup()
     down();
     printTetris();
 
-    // for(int i = 0; i < 9; i ++) {
-    //     down();
-    // }
-    down(true);
+     for(int i = 0; i < 9; i ++) {
+         down();
+    printTetris();
+     }
+    //down(true);
     printTetris();
 }
 
