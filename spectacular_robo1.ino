@@ -398,6 +398,9 @@ void setup()
   pinMode(A0, OUTPUT);
   pinMode(A1, OUTPUT);
   pinMode(A2, OUTPUT);
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
   
   ledTest();
   
@@ -414,10 +417,9 @@ void setup()
     rotate = 0;
     shape = 5;
     score = 0;
-    printTetris();
     rotateBlock();
     printTetris();
-    down();
+    /*down();
     printTetris();
 
      for(int i = 0; i < 9; i ++) {
@@ -425,13 +427,26 @@ void setup()
     printTetris();
      }
     //down(true);
-    printTetris();
+    printTetris();*/
 }
 
 void loop()
 {
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(1000); // Wait for 1000 millisecond(s)
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(1000); // Wait for 1000 millisecond(s)
+    down();
+    printTetris();
+  
+  if(digitalRead(A3)) {
+    left();
+    printTetris();
+  }
+  
+  if (digitalRead(A4)) {
+    rotateBlock();
+    printTetris();
+  }
+  
+  if (digitalRead(A5)) {
+    right();
+    printTetris();
+  }
 }
